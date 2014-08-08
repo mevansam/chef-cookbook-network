@@ -1,8 +1,9 @@
 name             'network'
-maintainer       'YOUR_NAME'
-maintainer_email 'YOUR_EMAIL'
+maintainer       'Mevan Samaratunga'
+maintainer_email 'mevan.samaratunga@fmr.com'
 license          'All rights reserved'
-description      'Installs/Configures network'
-long_description 'Installs/Configures network'
+description      'Installs/Configures network infrastructure'
+long_description 'Installs/Configures network infrastructure and provides chef resources for manipulating network resources'
 version          '0.1.0'
 
+depends          'sysutils', '= 1.0.0'
