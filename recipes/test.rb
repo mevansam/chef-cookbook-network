@@ -2,7 +2,7 @@
 # Cookbook Name:: network
 # Recipe:: test
 #
-# Copyright 2014, Copyright (c) 2012-2012 Fidelity Investments.
+# Copyright (c) 2014 Fidelity Investments.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,18 +29,18 @@ Chef::Log.info("*****************************************")
 # 	provider Chef::Provider::DnsEntry::Qip
 # end
 
-dns_entry "osenvtest.fmr.com" do
-	address "192.168.1.1"
-	provider Chef::Provider::DnsEntry::Qip
-end
+# dns_entry "osbuildtest.fmr.com" do
+# 	address "192.168.1.1"
+# 	provider Chef::Provider::DnsEntry::Qip
+# end
 
-# dns_entry "osenvtest.fmr.com" do
+# dns_entry "osbuildtest.fmr.com" do
 # 	address "10.135.79.64"
 # 	provider Chef::Provider::DnsEntry::Qip
 # 	action :delete
 # end
 
-# dns_entry "osenvtest.fmr.com" do
+# dns_entry "osbuildtest.fmr.com" do
 # 	address "192.168.1.1"
 # 	provider Chef::Provider::DnsEntry::Qip
 # 	action :delete
