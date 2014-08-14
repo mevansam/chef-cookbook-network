@@ -22,26 +22,3 @@ Chef::Log.info("***** Running on OS platform: \"#{node.platform}\"")
 Chef::Log.info("***** Chef server version: \"#{node[:chef_packages][:chef][:version]}\"")
 Chef::Log.info("***** Chef environment: \"#{node.chef_environment}\"")
 Chef::Log.info("*****************************************")
-
-# dns_entry "vc2c09mmk3297.fmr.com" do
-# 	address "10.135.79.64"
-# 	name_alias "cloudproxy-d.fmr.com"
-# 	provider Chef::Provider::DnsEntry::Qip
-# end
-
-# dns_entry "osbuildtest.fmr.com" do
-# 	address "192.168.1.1"
-# 	provider Chef::Provider::DnsEntry::Qip
-# end
-
-# dns_entry "osbuildtest.fmr.com" do
-# 	address "10.135.79.64"
-# 	provider Chef::Provider::DnsEntry::Qip
-# 	action :delete
-# end
-
-# dns_entry "osbuildtest.fmr.com" do
-# 	address "192.168.1.1"
-# 	provider Chef::Provider::DnsEntry::Qip
-# 	action :delete
-# end

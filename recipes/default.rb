@@ -16,3 +16,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+Chef::Log.info("*****************************************")
+Chef::Log.info("***** Running on OS platform: \"#{node.platform}\"")
+Chef::Log.info("***** Chef server version: \"#{node[:chef_packages][:chef][:version]}\"")
+Chef::Log.info("***** Chef environment: \"#{node.chef_environment}\"")
+Chef::Log.info("*****************************************")
+
+domain = node["env"]["domain"]
+
+if !domain.nil? && domain.length > 0
+	
+	node_domain_name = "#{node.name}.#{domain}"
+	Chef::Log.debug("Mapping: #{node_domain_name} => #{node["ipaddress"]}")
+
+	dns_entry node_domain_name do
+		address node["ipaddress"]
+		provider Chef::Provider::DnsEntry::Qip
+	end
+end
