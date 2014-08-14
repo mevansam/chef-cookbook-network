@@ -108,10 +108,11 @@ class Chef
 				def action_create
 					
 					if !@current_resource.address.nil? && !@name_address_mapping.nil? && !@name_address_mapping.empty?
-						Chef::Application.fatal!("Unable to create name #{@current_resource.name} as an A-Record already exists for that name.", 999)
+						Chef::Log.warn("Will not create name #{@current_resource.name} as an A-Record already exists for that name.")
+						return
 					end
 					# if !@current_resource.name_alias.nil? && !@alias_name_mapping.nil? && !@alias_name_mapping.empty?
-					# 	Chef::Application.fatal!("Unable to create alias #{@current_resource.name_alias} as an canonical mapping already exists for that alias.", 999)
+					# 	Chef::Log.warn("Will not create alias #{@current_resource.name_alias} as an canonical mapping already exists for that alias.")
 					# end
 
 					if !@current_resource.address.nil?
