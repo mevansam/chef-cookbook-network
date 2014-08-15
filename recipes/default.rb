@@ -27,7 +27,7 @@ domain = node["env"]["domain"]
 
 if !domain.nil? && domain.length > 0
 	
-	node_domain_name = "#{node.name}.#{domain}"
+	node_domain_name = (node.name.end_with?(domain) ? node_name : "#{node.name}.#{domain}")
 	Chef::Log.debug("Mapping: #{node_domain_name} => #{node["ipaddress"]}")
 
 	dns_entry node_domain_name do
