@@ -52,7 +52,7 @@ class Chef
 
 					qip_server_info = nil
 
-					encryption_key = node["env"]["encryption_key"]
+					encryption_key = get_encryption_secret
 					qip_server_info = Chef::EncryptedDataBagItem.load("service_endpoints-#{node.chef_environment}", "qip", encryption_key) if !encryption_key.nil?
 					qip_server_info = data_bag_item("service_endpoints-#{node.chef_environment}", "qip") if qip_server_info.nil?
 
