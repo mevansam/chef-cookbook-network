@@ -1,37 +1,29 @@
 # Copyright (c) 2014 Fidelity Investments.
 
 require 'chef/provider'
-require 'chef/mixin/shell_out'
-require 'uri/http'
-require 'erb'
 
 class Chef
-	class Provider
+    class Provider
 
-		class DnsEntry
+        class DnsEntry
 
-			class NoOp < Chef::Provider
+            class NoOp < Chef::Provider
 
-				def load_current_resource
-					@current_resource ||= Chef::Resource::DnsEntry.new(new_resource.name)
+                def load_current_resource
+                    @current_resource ||= Chef::Resource::DnsEntry.new(new_resource.name)
+                    @current_resource
+                end
 
-					@current_resource.description(new_resource.description)
-					@current_resource.address(new_resource.address)
-					@current_resource.name_alias(new_resource.name_alias)
+                def action_create
+                    Chef::Log.warn("The DNS entry provider implementation must be explicitely specified.")
+                end
 
-					@current_resource
-				end
+                def action_delete
+                    Chef::Log.warn("The DNS entry provider implementation must be explicitely specified.")
+                end
+            end
 
-				def action_create
-					Chef::Log.warn("The DNS entry provider implementation must be explicitely specified.")
-				end
+        end
 
-				def action_delete
-					Chef::Log.warn("The DNS entry provider implementation must be explicitely specified.")
-				end
-			end
-
-		end
-
-	end
+    end
 end

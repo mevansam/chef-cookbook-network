@@ -1,7 +1,6 @@
 # Copyright (c) 2014 Fidelity Investments.
 
 require 'chef/provider'
-require 'chef/mixin/shell_out'
 require 'uri/http'
 require 'erb'
 
@@ -52,7 +51,7 @@ class Chef
 
 					qip_server_info = nil
 
-					encryption_key = get_encryption_secret
+					encryption_key = ::SysUtils::get_encryption_secret
 					qip_server_info = Chef::EncryptedDataBagItem.load("service_endpoints-#{node.chef_environment}", "qip", encryption_key)
 
 					if !qip_server_info.nil?
@@ -68,7 +67,7 @@ class Chef
 
 					Chef::Log.debug("QIP Server: #{@qip_server}")
 
-					@qip_ssh = OSEnv::Helper::SSH.new(@qip_server, @qip_user, @qip_key)
+					@qip_ssh = ::SysUtils::SSH.new(@qip_server, @qip_user, @qip_key)
 					results = @qip_ssh.execute( ". #{@cli_init} && " +
 						"echo -e \"$(dig #{@current_resource.name} | awk '/\\tA\\t/ { print $5 }') \" && " +
 						"echo -e \"$(nslookup \"#{@current_resource.address}\" | awk '/name =/ { print $4 }') \" && " +
