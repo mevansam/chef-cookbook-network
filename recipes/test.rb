@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: network
-# Recipe:: default
+# Recipe:: test
 #
 # Copyright (c) 2014 Fidelity Investments.
 #
@@ -20,15 +20,25 @@
 # limitations under the License.
 #
 
-domain = node["env"]["domain"]
+# network_interface "bond0" do
+#     type               "bond"
+#     mac_address_prefix "00:00:02:"
+#     bond_devices       "10000 Mbit/s"
+#     bond_mode          "active-backup"
+# end
 
-if !domain.nil? && domain.length > 0
-	
-	node_domain_name = (node.name.end_with?(domain) ? node.name : "#{node.name}.#{domain}")
-	Chef::Log.debug("Mapping: #{node_domain_name} => #{node["ipaddress"]}")
+# network_interface "vlan702" do
+#     type        "vlan"
+#     vlan_device "bond0"
+#     vlan        "702"
+# end
 
-	dns_entry node_domain_name do
-		address node["ipaddress"]
-		provider Chef::Provider::DnsEntry::Qip
-	end
-end
+# network_interface "vlan702" do
+#     type   "vlan"
+#     action :delete
+# end
+
+# network_interface "bond0" do
+#   type   "bond"
+#   action :delete
+# end
