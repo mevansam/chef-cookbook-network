@@ -1,6 +1,6 @@
 name             'network'
 maintainer       'Mevan Samaratunga'
-maintainer_email 'mevan.samaratunga@fmr.com'
+maintainer_email 'mevansam@gmail.com'
 license          'All rights reserved'
 description      'Installs/Configures network infrastructure'
 long_description 'Installs/Configures network infrastructure and provides chef resources for manipulating network resources'

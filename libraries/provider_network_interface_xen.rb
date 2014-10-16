@@ -1,7 +1,7 @@
-# Copyright (c) 2014 Fidelity Investments.
+
 #
 # Author: Mevan Samaratunga
-# Email: mevan.samaratunga@fmr.com
+# Email: mevansam@gmail.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,6 +38,11 @@ class Chef
                     @current_resource.device(new_resource.device)
                     @current_resource.mac_address_prefix(new_resource.mac_address_prefix)
                     @current_resource.mac_address(new_resource.mac_address)
+
+                    @current_resource.ip_address(new_resource.ip_address)
+                    @current_resource.gateway_address(new_resource.gateway_address)
+                    @current_resource.network_mask(new_resource.network_mask)
+                    @current_resource.dns_servers(new_resource.dns_servers)
 
                     @current_resource.bond_devices(new_resource.bond_devices)
                     @current_resource.bond_mode(new_resource.bond_mode)
@@ -109,6 +114,20 @@ class Chef
 
                                 network_uuid = shell("xe network-create name-label=\"#{@current_resource.name}\"")
                                 shell!("xe vlan-create pif-uuid=#{pif_uuid} vlan=#{@current_resource.vlan} network-uuid=#{network_uuid}")
+
+                                if !@current_resource.ip_address.nil? &&
+                                    !@current_resource.ip_address.empty?
+
+                                    pif_uuid = shell("xe pif-list network-uuid=#{network_uuid} --minimal")
+
+                                    shell!( "xe pif-reconfigure-ip uuid=#{pif_uuid} mode=static " + 
+                                        "IP=#{@current_resource.ip_address} " +
+                                        "gateway=#{@current_resource.gateway_address} " + 
+                                        "netmask=#{@current_resource.network_mask} " + 
+                                        "DNS=#{@current_resource.dns_servers}")
+
+                                    shell!("xe pif-plug uuid=#{pif_uuid}")
+                                end
 
                             else
                                 Chef::Application.fatal!("The Xen network_interface provided only supports creation of a vlan or bond PIF for XenServer.", 999)

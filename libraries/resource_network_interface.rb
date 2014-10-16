@@ -1,7 +1,7 @@
-# Copyright (c) 2014 Fidelity Investments.
+
 #
 # Author: Mevan Samaratunga
-# Email: mevan.samaratunga@fmr.com
+# Email: mevansam@gmail.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -64,8 +64,9 @@ class Chef
                 @mac_address = nil
 
                 @ip_address = nil
+                @gateway_address = nil
                 @network_mask = nil
-                @dns_servers = [ ]
+                @dns_servers = nil
                 @dns_search = nil
 
                 @bond_devices = nil
@@ -102,6 +103,10 @@ class Chef
 
             def ip_address(arg=nil)
                 set_or_return(:ip_address, arg, :kind_of => String)
+            end
+
+            def gateway_address(arg=nil)
+                set_or_return(:gateway_address, arg, :kind_of => String)
             end
 
             def network_mask(arg=nil)

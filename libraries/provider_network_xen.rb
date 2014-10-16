@@ -1,7 +1,7 @@
-# Copyright (c) 2014 Fidelity Investments.
+
 #
 # Author: Mevan Samaratunga
-# Email: mevan.samaratunga@fmr.com
+# Email: mevansam@gmail.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,16 +37,19 @@ class Chef
                 def action_create
 
                     if !exists?
-                        network_uuid = shell("xe network-create name-label=\"#{@current_resource.name}\"")
-                        host_uuid = shell("xe host-list --minimal")
-                        shell!("xe network-attach uuid=#{network_uuid} host-uuid=#{host_uuid}")
+                        @network_uuid = shell("xe network-create name-label=\"#{@current_resource.name}\"")
+                        new_resource.updated_by_last_action(true)
                     end
+
+                    host_uuid = shell("xe host-list --minimal")
+                    shell!("xe network-attach uuid=#{@network_uuid} host-uuid=#{host_uuid}")
                 end
 
                 def action_delete
 
                     if exists?
                         shell!("xe network-destroy uuid=#{@network_uuid}")
+                        new_resource.updated_by_last_action(true)
                     end
                 end
 
