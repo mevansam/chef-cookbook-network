@@ -1,9 +1,9 @@
 {
 	"id": "qip",
-	"server": "vc2c245s239.fmr.com",
-	"user": "srvc2cnet",
-	"key": "SoCCer123!",
-	"dbuser": "srvc2cnet",
-	"dbpassword": "SoCCer123!",
+	"server": "xxx.mevansam.org",
+	"user": "qip_server_user",
+	"key": "qip_server_password_or_private_key",
+	"dbuser": "qip_db_user",
+	"dbpassword": "qip_db_password",
 	"cli_init": "/ipdb/qip/etc/shrc"
 }

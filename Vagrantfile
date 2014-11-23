@@ -85,7 +85,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.json = {
       env: {
         encryption_key: "1234",
-        domain: "fmr.com"
+        domain: "mevansam.org"
       }
     }
 
