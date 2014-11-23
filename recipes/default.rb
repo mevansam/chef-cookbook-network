@@ -2,8 +2,6 @@
 # Cookbook Name:: network
 # Recipe:: default
 #
-
-#
 # Author: Mevan Samaratunga
 # Email: mevansam@gmail.com
 #

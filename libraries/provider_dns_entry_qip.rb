@@ -65,8 +65,6 @@ class Chef
 					@qip_dbuser = nil
 					@qip_dbpassword = nil
 
-					qip_server_info = nil
-
 					encryption_key = ::SysUtils::get_encryption_secret(node)
 					qip_server_info = Chef::EncryptedDataBagItem.load("service_endpoints-#{node.chef_environment}", "qip", encryption_key)
 
