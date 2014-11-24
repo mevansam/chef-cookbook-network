@@ -25,10 +25,34 @@ class Chef
 
 			def initialize(name, run_context=nil)
 				super
+
+				require 'fog'
 				
 				@resource_name = :dns_entry
-
 				@provider = Chef::Provider::DnsEntry::NoOp
+
+				if !run_context.nil?
+
+					data_bag = "service_endpoints-#{run_context.node.chef_environment}"
+					[ 'qip', 'aws' ].each do |dns_provider|
+
+						begin
+							ep = Chef::DataBagItem.load(data_bag, dns_provider)
+							unless ep.nil?
+								case dns_provider
+									when 'qip'
+										@provider = Chef::Provider::DnsEntry::Qip
+									when 'aws'
+										@provider = Chef::Provider::DnsEntry::Aws
+								end
+							end
+						rescue
+							# Do nothing
+						end
+					end
+				end
+
+				Chef::Log.debug("Using DNS provider class: #{@provider}")
 
 				@action = :create
 				@allowed_actions = [:create, :delete]
@@ -49,7 +73,11 @@ class Chef
 				set_or_return(:address, arg, :kind_of => String)
 			end
 
-			# Name to alias give dns name with
+			# Name to alias this dns name with
+			#
+			# @deprecated: This should be handled by a separate resource
+			# and is currently implemented by the qip provider only
+			#
 			def name_alias(arg=nil)
 				set_or_return(:name_alias, arg, :kind_of => String)
 			end

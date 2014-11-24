@@ -60,7 +60,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # information on available options.
 
   # The path to the Berksfile to use with Vagrant Berkshelf
-  # config.berkshelf.berksfile_path = "./Berksfile"
+  config.berkshelf.berksfile_path = "./Berksfile"
 
   # Enabling the Berkshelf plugin. To enable this globally, add this configuration
   # option to your ~/.vagrant.d/Vagrantfile file
@@ -76,21 +76,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision :chef_client do |chef|
 
-    chef.arguments = "-l debug"
+    chef.arguments = "-l info"
     chef.chef_server_url = "http://192.168.50.1:9999"
-    chef.validation_key_path = "test_data/chef-zero_validator.pem"
+    chef.validation_key_path = "./.chef/chef-zero_validator.pem"
     chef.validation_client_name = "chef-zero_validator"
     chef.node_name = "network-test-client"
 
     chef.json = {
       env: {
         encryption_key: "1234",
-        domain: "mevansam.org"
+        domain: "pcf-services.com"
       }
     }
 
     chef.run_list = [
-        "recipe[network::default]"
+        "recipe[network::test]"
     ]
   end
 end

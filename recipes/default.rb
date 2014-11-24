@@ -18,6 +18,14 @@
 # limitations under the License.
 #
 
+# Setup gem environment and install fog, which
+# is required to work with Cloud DNS providers
+
+include_recipe "gem_installation::default"
+gem_installation "fog" if !gem_installed?("fog")
+
+## Create a DNS entry for the current node
+
 domain = node["env"]["domain"]
 
 if !domain.nil? && domain.length > 0
@@ -27,6 +35,5 @@ if !domain.nil? && domain.length > 0
 
 	dns_entry node_domain_name do
 		address node["ipaddress"]
-		provider Chef::Provider::DnsEntry::Qip
 	end
 end

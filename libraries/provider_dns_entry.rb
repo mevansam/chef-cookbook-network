@@ -31,11 +31,11 @@ class Chef
                 end
 
                 def action_create
-                    Chef::Log.warn("The DNS entry provider implementation must be explicitely specified.")
+                    Chef::Log.warn("Unable to determine the DNS provider to create #{@current_resource.name}.")
                 end
 
                 def action_delete
-                    Chef::Log.warn("The DNS entry provider implementation must be explicitely specified.")
+                    Chef::Log.warn("Unable to determine the DNS provider to delete #{@current_resource.name}.")
                 end
             end
 

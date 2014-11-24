@@ -6,4 +6,5 @@ description      'Installs/Configures network infrastructure'
 long_description 'Installs/Configures network infrastructure and provides chef resources for manipulating network resources'
 version          '0.1.0'
 
+depends          'gem_installation', '~> 2.0.1'
 depends          'sysutils'
