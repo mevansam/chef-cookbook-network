@@ -22,6 +22,7 @@
 # is required to work with Cloud DNS providers
 
 include_recipe "gem_installation::default"
+gem_installation "dnsruby" if !gem_installed?("dnsruby")
 gem_installation "fog" if !gem_installed?("fog")
 
 ## Create a DNS entry for the current node

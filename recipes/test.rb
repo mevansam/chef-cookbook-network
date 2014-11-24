@@ -21,6 +21,7 @@
 #
 
 include_recipe "gem_installation::default"
+gem_installation "dnsruby" if !gem_installed?("dnsruby")
 gem_installation "fog" if !gem_installed?("fog")
 
 # network_interface "bond0" do
