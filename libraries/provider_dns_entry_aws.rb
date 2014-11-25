@@ -33,10 +33,14 @@ class Chef
                 attr_accessor :flag
 
                 def load_current_resource
+                    Chef::Application.fatal!("DNS name cannot be empty.") \
+                        if new_resource.name.nil? || new_resource.name.empty?
+
                     @current_resource ||= Chef::Resource::DnsEntry.new(new_resource.name)
 
                     @current_resource.description(new_resource.description)
                     @current_resource.address(new_resource.address)
+                    @current_resource.name_alias(new_resource.name_alias)
 
                     aws_server_info = Chef::EncryptedDataBagItem.load(
                         "service_endpoints-#{node.chef_environment}",
@@ -57,35 +61,64 @@ class Chef
 
                     Chef::Log.info("Using AWS DNS provider for name #{@current_resource.name}.")
 
-                    @name = new_resource.name[/([-+_0-9a-zA-Z]+)\.(.*)/, 1]
-                    @domain = new_resource.name[/([-+_0-9a-zA-Z]+)\.(.*)/, 2] + '.'
-
                     @dns_zone = @fog_dns.zones.all(:domain => @domain).first
                     Chef::Application.fatal!("Unable find AWS zone '#{@domain}'.", 999) if @dns_zone.nil?
 
-                    records = @dns_zone.records.all(:name => @name + '.' + @domain)
-                    Chef::Application.fatal!("Found more than one record for #{new_resource.name} or it " +
-                        "was not of type 'A'.") if records.size>1 || (records.size==1 && records.first.type != 'A')
+                    @arecord = @dns_zone.records.get(@current_resource.name)
 
-                    @record = records.first
-                    Chef::Log.info("Found a DNS 'A' record for #{new_resource.name}.")
+                    Chef::Application.fatal!(
+                        "Found a DNS '#{@arecord.type}' record for #{@current_resource.name} " +
+                        "instead of of type 'A'.") unless @arecord.nil? || @arecord.type=='A'
+
+                    if @current_resource.name_alias.nil?
+                        @crecord = nil
+                    else
+                        @crecord = @dns_zone.records.get(@current_resource.name_alias)
+
+                        Chef::Application.fatal!(
+                            "Found a DNS '#{@crecord.type}' record for #{@current_resource.name_alias} " +
+                            "instead of type 'CNAME'.") unless @crecord.nil? || @crecord.type=='CNAME'
+                    end
                 end
 
                 def action_create
 
-                    if @record.nil?
+                    unless @current_resource.address.nil?
+
+                        if @arecord.nil?
+
+                            Chef::Log.info("Creating a DNS 'A' record: " +
+                                "#{@current_resource.name} => #{@current_resource.address}.")
+
+                            @dns_zone.records.create(
+                                :value => @current_resource.address,
+                                :name  => @current_resource.name,
+                                :type  => 'A'
+                            )
+                            new_resource.updated_by_last_action(true)
+
+                        elsif @arecord.value.first != @current_resource.address
+
+                            Chef::Log.info("Updating a DNS 'A' record: " +
+                                "#{@current_resource.name} => #{@current_resource.address}.")
+
+                            @arecord.modify(
+                                :value => [ @current_resource.address ]
+                            )
+                            new_resource.updated_by_last_action(true)
+                        end
+                    end
+
+                    unless @current_resource.name_alias.nil? ||
+                        (!@crecord.nil? && @crecord.value.first==@current_resource.name)
+
+                        Chef::Log.info("Creating a DNS 'CNAME' record: " +
+                           "#{@current_resource.name_alias} => #{@current_resource.name}.")
 
                         @dns_zone.records.create(
-                            :value => @current_resource.address,
-                            :name  => @current_resource.name,
-                            :type  => 'A'
-                        )
-                        new_resource.updated_by_last_action(true)
-
-                    elsif @record.value.first != @current_resource.address
-
-                        @record.modify(
-                            :value => [ @current_resource.address ]
+                            :value => @current_resource.name,
+                            :name  => @current_resource.name_alias,
+                            :type  => 'CNAME'
                         )
                         new_resource.updated_by_last_action(true)
                     end
@@ -93,9 +126,16 @@ class Chef
 
                 def action_delete
 
-                    unless @record.nil?
+                    unless @arecord.nil?
 
-                        success = @record.destroy
+                        Chef::Log.info("Deleting a DNS 'A' record: " +
+                           "#{@current_resource.name} => #{@current_resource.address}.")
+
+                        @dns_zone.records.all.each do |r|
+                            r.destroy if r.type=='CNAME' && r.value.first==@current_resource.name
+                        end
+                        success = @arecord.destroy
+
                         Chef::Application.fatal!("Unable delete DNS entry #{@current_resource.name}.", 999) \
                             unless success
 

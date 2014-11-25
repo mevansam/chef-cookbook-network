@@ -26,7 +26,7 @@ class Chef
 			def initialize(name, run_context=nil)
 				super
 
-				require 'fog'
+				require 'fog' if gem_installed?("fog")
 				
 				@resource_name = :dns_entry
 				@provider = Chef::Provider::DnsEntry::NoOp
@@ -74,10 +74,6 @@ class Chef
 			end
 
 			# Name to alias this dns name with
-			#
-			# @deprecated: This should be handled by a separate resource
-			# and is currently implemented by the qip provider only
-			#
 			def name_alias(arg=nil)
 				set_or_return(:name_alias, arg, :kind_of => String)
 			end

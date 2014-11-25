@@ -50,11 +50,23 @@ gem_installation "fog" if !gem_installed?("fog")
 # dns_entry "mytest.pcf-services.com" do
 #     address "1.2.3.4"
 # end
-
+#
+# dns_entry "mytest.pcf-services.com" do
+#     name_alias "mytest1.pcf-services.com"
+# end
+#
+# # dns_entry "mytest.pcf-services.com" do
+# #     name_alias "mytest1.pcf-services.com"
+# # end
+#
+# dns_entry "mytest.pcf-services.com" do
+#     name_alias "mytest2.pcf-services.com"
+# end
+#
 # dns_entry "mytest.pcf-services.com" do
 #     address "4.3.2.1"
 # end
-
+#
 # dns_entry "mytest.pcf-services.com" do
 #     action :delete
 # end
