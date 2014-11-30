@@ -7,4 +7,5 @@ long_description 'Installs/Configures network infrastructure and provides chef r
 version          '0.1.0'
 
 depends          'gem_installation', '~> 2.0.1'
+depends          'hostsfile', '~> 2.4.5'
 depends          'sysutils'

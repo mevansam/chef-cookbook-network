@@ -30,11 +30,41 @@ gem_installation "fog" if !gem_installed?("fog")
 domain = node["env"]["domain"]
 
 if !domain.nil? && domain.length > 0
-	
-	node_domain_name = (node.name.end_with?(domain) ? node.name : "#{node.name}.#{domain}")
-	Chef::Log.debug("Mapping: #{node_domain_name} => #{node["ipaddress"]}")
 
-	dns_entry node_domain_name do
+	if node.name.end_with?(domain)
+
+		fqdn = node.name
+		hostname = fqdn[0, fqdn.length - domain.length - 1]
+	else
+		fqdn = node.name + '.' + domain
+		hostname = node.name
+	end
+
+	Chef::Log.debug("Mapping: #{fqdn} => #{node["ipaddress"]}")
+	dns_entry fqdn do
 		address node["ipaddress"]
+	end
+
+	hostsfile_entry '127.0.0.1' do
+		hostname 'localhost.localdomain'
+		aliases [ 'localhost' ]
+	end
+
+	hostsfile_entry '127.0.1.1' do
+		hostname fqdn
+		aliases [ hostname ]
+	end
+
+	hostsfile_entry node["ipaddress"] do
+		hostname fqdn
+		aliases [ hostname ]
+	end
+
+	shell!("[ \"$(cat /etc/hostname)\" == \"#{fqdn}\" ] || echo \"#{fqdn}\" > /etc/hostname")
+
+	ohai 'reload_hostname' do
+		plugin 'hostname'
+		action :reload
+		only_if { node['fqdn'] != fqdn }
 	end
 end
