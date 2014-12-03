@@ -50,11 +50,6 @@ if !domain.nil? && domain.length > 0
 		aliases [ 'localhost' ]
 	end
 
-	hostsfile_entry '127.0.1.1' do
-		hostname fqdn
-		aliases [ hostname ]
-	end
-
 	hostsfile_entry node["ipaddress"] do
 		hostname fqdn
 		aliases [ hostname ]
