@@ -32,17 +32,36 @@ class Chef
 
 				if !run_context.nil?
 
+					secret = ::SysUtils::get_encryption_secret(run_context.node)
 					data_bag = "service_endpoints-#{run_context.node.chef_environment}"
+
 					[ 'qip', 'aws' ].each do |dns_provider|
 
 						begin
-							ep = Chef::DataBagItem.load(data_bag, dns_provider)
+							ep = Chef::EncryptedDataBagItem.load(data_bag, dns_provider, secret)
 							unless ep.nil?
 								case dns_provider
 									when 'qip'
-										@provider = Chef::Provider::DnsEntry::Qip
+										qip_server = ep['server']
+										qip_user = ep['user']
+
+										unless qip_server.nil? || qip_server.empty? ||
+											qip_user.nil? || qip_user.empty?
+
+											@provider = Chef::Provider::DnsEntry::Qip
+											break
+										end
+
 									when 'aws'
-										@provider = Chef::Provider::DnsEntry::Aws
+										aws_access_key_id = ep['aws_access_key_id']
+										aws_secret_access_key = ep['aws_secret_access_key']
+
+										unless aws_access_key_id.nil? || aws_access_key_id.empty? ||
+											aws_secret_access_key.nil? || aws_secret_access_key.empty?
+
+											@provider = Chef::Provider::DnsEntry::Aws
+											break
+										end
 								end
 							end
 						rescue
