@@ -15,6 +15,15 @@
 # limitations under the License.
 #
 
+# Setup gem environment and install fog, which
+# is required to work with Cloud DNS providers
+
+install_gem('dnsruby', { :version => '1.56.0'})
+require 'dnsruby'
+
+install_gem('fog', { :version => '1.25.0' })
+require 'fog'
+
 require 'chef/resource'
 
 class Chef
@@ -25,8 +34,6 @@ class Chef
 			def initialize(name, run_context=nil)
 				super
 
-				require 'fog' if gem_installed?("fog")
-				
 				@resource_name = :dns_entry
 				@provider = Chef::Provider::DnsEntry::NoOp
 

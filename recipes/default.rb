@@ -18,13 +18,6 @@
 # limitations under the License.
 #
 
-# Setup gem environment and install fog, which
-# is required to work with Cloud DNS providers
-
-include_recipe "gem_installation::default"
-gem_installation "dnsruby" if !gem_installed?("dnsruby")
-gem_installation "fog" if !gem_installed?("fog")
-
 platform_family = node['platform_family']
 
 ## Create a DNS entry for the current node
