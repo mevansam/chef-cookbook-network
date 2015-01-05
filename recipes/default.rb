@@ -35,9 +35,16 @@ if !domain.nil? && domain.length > 0
 		hostname = node.name
 	end
 
-	Chef::Log.debug("Mapping: #{fqdn} => #{node["ipaddress"]}")
-	dns_entry fqdn do
-		address node["ipaddress"]
+	if node["ec2"]
+		Chef::Log.debug("Mapping: #{fqdn} => #{node["ec2"]["public_ipv4"]}")
+		dns_entry fqdn do
+			address node["ec2"]["public_ipv4"]
+		end
+	else
+		Chef::Log.debug("Mapping: #{fqdn} => #{node["ipaddress"]}")
+		dns_entry fqdn do
+			address node["ipaddress"]
+		end
 	end
 
 	hostsfile_entry '127.0.0.1' do
