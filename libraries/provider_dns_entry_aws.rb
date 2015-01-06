@@ -92,7 +92,8 @@ class Chef
                             @dns_zone.records.create(
                                 :value => @current_resource.address,
                                 :name  => @current_resource.name,
-                                :type  => 'A'
+                                :type  => 'A',
+                                :ttl => '300'
                             )
                             new_resource.updated_by_last_action(true)
 
