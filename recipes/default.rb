@@ -39,11 +39,13 @@ if !domain.nil? && domain.length > 0
 		Chef::Log.debug("Mapping: #{fqdn} => #{node["ec2"]["public_ipv4"]}")
 		dns_entry fqdn do
 			address node["ec2"]["public_ipv4"]
+			name_alias node["env"]["alias"] if node["env"]["alias"]
 		end
 	else
 		Chef::Log.debug("Mapping: #{fqdn} => #{node["ipaddress"]}")
 		dns_entry fqdn do
 			address node["ipaddress"]
+			name_alias node["env"]["alias"] if node["env"]["alias"]
 		end
 	end
 
