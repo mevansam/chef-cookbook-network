@@ -22,7 +22,7 @@ platform_family = node['platform_family']
 
 ## Create a DNS entry for the current node
 
-domain = node["env"]["domain"]
+domain = node['env']['domain']
 
 if !domain.nil? && domain.length > 0
 
@@ -35,17 +35,17 @@ if !domain.nil? && domain.length > 0
 		hostname = node.name
 	end
 
-	if node["ec2"]
-		Chef::Log.debug("Mapping: #{fqdn} => #{node["ec2"]["public_ipv4"]}")
+	if node['ec2']
+		Chef::Log.debug("Mapping: #{fqdn} => #{node['ec2']['public_ipv4']}")
 		dns_entry fqdn do
-			address node["ec2"]["public_ipv4"]
-			name_alias node["env"]["alias"] if node["env"]["alias"]
+			address node['ec2']['public_ipv4']
+			name_alias node['env']['alias'] if node['env']['alias']
 		end
 	else
-		Chef::Log.debug("Mapping: #{fqdn} => #{node["ipaddress"]}")
+		Chef::Log.debug("Mapping: #{fqdn} => #{node['ipaddress']}")
 		dns_entry fqdn do
-			address node["ipaddress"]
-			name_alias node["env"]["alias"] if node["env"]["alias"]
+			address node['ipaddress']
+			name_alias node['env']['alias'] if node['env']['alias']
 		end
 	end
 
@@ -56,7 +56,7 @@ if !domain.nil? && domain.length > 0
 		aliases [ 'localhost' ]
 	end
 
-	hostsfile_entry '127.0.1.1' do
+	hostsfile_entry node['ipaddress'] do
 		hostname fqdn
 		aliases [ hostname ]
 	end
@@ -69,40 +69,40 @@ if !domain.nil? && domain.length > 0
 end
 
 # Setup networks
-if node["env"]["network_interfaces"].size > 0
+if node['env']['network_interfaces'].size > 0
 
 	case platform_family
 
-		when "fedora", "rhel"
-			Chef::Log.warn("Setting up network interfaces is currently not supported on non-debian systems.")
+		when 'fedora', 'rhel'
+			Chef::Log.warn('Setting up network interfaces is currently not supported on non-debian systems.')
 
-		when "debian"
+		when 'debian'
 
-			include_recipe "network_interfaces::default"
-			node["env"]["network_interfaces"].each do |network_interface|
+			include_recipe 'network_interfaces::default'
+			node['env']['network_interfaces'].each do |network_interface|
 
-				network_interfaces network_interface["device"] do
-					bridge      network_interface["bridge"]
-					bridge_stp  network_interface["bridge_stp"]
-					bond        network_interface["bond"]
-					bond_mode   network_interface["bond_mode"]
-					vlan_dev    network_interface["vlan_dev"]
-					onboot      network_interface["onboot"]
-					bootproto   network_interface["bootproto"]
-					target      network_interface["target"]
-					gateway     network_interface["gateway"]
-					metric      network_interface["metric"]
-					mtu         network_interface["mtu"]
-					mask        network_interface["mask"]
-					network     network_interface["network"]
-					broadcast   network_interface["broadcast"]
-					pre_up      network_interface["pre_up"]
-					up          network_interface["up"]
-					post_up     network_interface["post_up"]
-					pre_down    network_interface["pre_down"]
-					down        network_interface["down"]
-					post_down   network_interface["post_down"]
-					custom      network_interface["custom"]
+				network_interfaces network_interface['device'] do
+					bridge      network_interface['bridge']
+					bridge_stp  network_interface['bridge_stp']
+					bond        network_interface['bond']
+					bond_mode   network_interface['bond_mode']
+					vlan_dev    network_interface['vlan_dev']
+					onboot      network_interface['onboot']
+					bootproto   network_interface['bootproto']
+					target      network_interface['target']
+					gateway     network_interface['gateway']
+					metric      network_interface['metric']
+					mtu         network_interface['mtu']
+					mask        network_interface['mask']
+					network     network_interface['network']
+					broadcast   network_interface['broadcast']
+					pre_up      network_interface['pre_up']
+					up          network_interface['up']
+					post_up     network_interface['post_up']
+					pre_down    network_interface['pre_down']
+					down        network_interface['down']
+					post_down   network_interface['post_down']
+					custom      network_interface['custom']
 				end
 			end
 	end
