@@ -49,17 +49,17 @@ if !domain.nil? && domain.length > 0
 		end
 	end
 
+	shell!("[ \"$(cat /etc/hostname)\" == \"#{fqdn}\" ] || (echo \"#{fqdn}\" > /etc/hostname && hostname #{fqdn})")
+
 	hostsfile_entry '127.0.0.1' do
 		hostname 'localhost.localdomain'
 		aliases [ 'localhost' ]
 	end
 
-	hostsfile_entry node["ipaddress"] do
+	hostsfile_entry '127.0.1.1' do
 		hostname fqdn
 		aliases [ hostname ]
 	end
-
-	shell!("[ \"$(cat /etc/hostname)\" == \"#{fqdn}\" ] || echo \"#{fqdn}\" > /etc/hostname")
 
 	ohai 'reload_hostname' do
 		plugin 'hostname'
