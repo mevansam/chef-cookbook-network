@@ -56,7 +56,7 @@ if !domain.nil? && domain.length > 0
 		aliases [ 'localhost' ]
 	end
 
-	hostsfile_entry node['ipaddress'] do
+	hostsfile_entry '127.0.1.1' do
 		hostname fqdn
 		aliases [ hostname ]
 	end
@@ -77,6 +77,27 @@ if node['env']['network_interfaces'].size > 0
 			Chef::Log.warn('Setting up network interfaces is currently not supported on non-debian systems.')
 
 		when 'debian'
+
+		    script "update network configuration" do
+		        interpreter "bash"
+		        user "root"
+		        code <<-EOH
+
+					n=$(grep auto /etc/network/interfaces | wc -l)
+					if [ $n -gt 1 ]; then
+
+						pushd /etc/network
+						cp ./interfaces ./interfaces.orig
+						mkdir -p ./interfaces.d
+						csplit -sk ./interfaces '/auto/' {*}
+						cat xx00 xx01 > ./interfaces
+						echo -e "source /etc/network/interfaces.d/*\n" >> ./interfaces
+						mv xx02 ./interfaces.d/eth0
+						rm xx*
+						popd
+					fi
+		        EOH
+		    end
 
 			include_recipe 'network_interfaces::default'
 			node['env']['network_interfaces'].each do |network_interface|
